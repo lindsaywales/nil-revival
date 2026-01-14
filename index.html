@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIL Revival - Democratizing High-End NIL Production</title>
+    <link rel="icon" href="data:,">
     
-    <!-- Supabase Client Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Client Library - Try primary CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
     
     <style>
         /* [Previous CSS stays exactly the same - I'm keeping your existing styles] */
@@ -968,31 +969,54 @@
         // ===========================================
         // SUPABASE CONFIGURATION
         // ===========================================
+        console.log('🔍 Checking for Supabase library...');
+        
         const SUPABASE_URL = 'https://dvspfnicraalisodqbcn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_eiCFYdCfGK5Xywio7aj2Vg_iSLQ6GRg';
         
-        // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Initialize Supabase client - with error handling
+        let supabase;
+        
+        // Wait for page to fully load before initializing
+        window.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                try {
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('✅ Supabase initialized successfully');
+                } catch (error) {
+                    console.error('❌ Supabase initialization error:', error);
+                    alert('Database connection error. Forms will collect data but not save yet. Please contact support.');
+                }
+            } else {
+                console.error('❌ Supabase library not loaded');
+                console.log('Window.supabase:', window.supabase);
+                alert('Database library not loaded. Please refresh the page. If problem persists, contact support.');
+            }
+        });
 
         // ===========================================
         // MODAL FUNCTIONS
         // ===========================================
         function openAthleteSignup() {
+            console.log('✅ Athlete button clicked!');
             document.getElementById('athleteModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
         function closeAthleteSignup() {
+            console.log('Closing athlete modal');
             document.getElementById('athleteModal').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
         function openBrandSignup() {
+            console.log('✅ Brand button clicked!');
             document.getElementById('brandModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
         function closeBrandSignup() {
+            console.log('Closing brand modal');
             document.getElementById('brandModal').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
@@ -1060,12 +1084,22 @@
             submitBtn.innerHTML = '<span class="loading"></span> Creating Profile...';
 
             try {
+                // Check if Supabase is available
+                if (!supabase) {
+                    throw new Error('Database not connected. Please refresh the page and try again.');
+                }
+
                 // Upload photo
                 const photoFile = document.getElementById('athletePhoto').files[0];
+                
+                if (!photoFile) {
+                    throw new Error('Please select a profile photo');
+                }
+                
                 const photoUrl = await uploadFile(photoFile, 'athlete-photos', 'profiles');
 
                 if (!photoUrl) {
-                    throw new Error('Failed to upload photo');
+                    throw new Error('Failed to upload photo. Please try again.');
                 }
 
                 // Prepare data
@@ -1082,6 +1116,8 @@
                     photo_url: photoUrl
                 };
 
+                console.log('📤 Submitting athlete data:', athleteData);
+
                 // Insert into database
                 const { data, error } = await supabase
                     .from('athletes')
@@ -1089,8 +1125,11 @@
                     .select();
 
                 if (error) {
-                    throw error;
+                    console.error('Database error:', error);
+                    throw new Error('Failed to save profile: ' + error.message);
                 }
+
+                console.log('✅ Profile saved:', data);
 
                 // Success!
                 alert(`Welcome to NIL Revival, ${athleteData.name}! 🎉\n\nYour athlete profile has been created successfully. We'll review your application and start matching you with brands.\n\nCheck your email at ${athleteData.email} for next steps!`);
@@ -1100,8 +1139,8 @@
                 document.getElementById('athletePreview').innerHTML = '';
 
             } catch (error) {
-                console.error('Error:', error);
-                alert('There was an error creating your profile. Please try again or contact support.');
+                console.error('❌ Error:', error);
+                alert('Error: ' + error.message + '\n\nPlease try again or contact support if the problem persists.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Create My Profile 🚀';
@@ -1119,12 +1158,22 @@
             submitBtn.innerHTML = '<span class="loading"></span> Creating Profile...';
 
             try {
+                // Check if Supabase is available
+                if (!supabase) {
+                    throw new Error('Database not connected. Please refresh the page and try again.');
+                }
+
                 // Upload logo
                 const logoFile = document.getElementById('brandLogo').files[0];
+                
+                if (!logoFile) {
+                    throw new Error('Please select a company logo');
+                }
+                
                 const logoUrl = await uploadFile(logoFile, 'brand-logos', 'logos');
 
                 if (!logoUrl) {
-                    throw new Error('Failed to upload logo');
+                    throw new Error('Failed to upload logo. Please try again.');
                 }
 
                 // Collect checkboxes
@@ -1149,6 +1198,8 @@
                     logo_url: logoUrl
                 };
 
+                console.log('📤 Submitting brand data:', brandData);
+
                 // Insert into database
                 const { data, error } = await supabase
                     .from('brands')
@@ -1156,8 +1207,11 @@
                     .select();
 
                 if (error) {
-                    throw error;
+                    console.error('Database error:', error);
+                    throw new Error('Failed to save profile: ' + error.message);
                 }
+
+                console.log('✅ Profile saved:', data);
 
                 // Success!
                 alert(`Welcome to NIL Revival, ${brandData.company_name}! 🚀\n\nYour brand profile has been created successfully. Our team will review your campaign goals and start matching you with perfect athletes.\n\nYou'll receive an email at ${brandData.email} with your dashboard access within 24 hours!`);
@@ -1167,8 +1221,8 @@
                 document.getElementById('brandPreview').innerHTML = '';
 
             } catch (error) {
-                console.error('Error:', error);
-                alert('There was an error creating your profile. Please try again or contact support.');
+                console.error('❌ Error:', error);
+                alert('Error: ' + error.message + '\n\nPlease try again or contact support if the problem persists.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Start Creating Content 🎬';
