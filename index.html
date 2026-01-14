@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIL Revival - Democratizing High-End NIL Production</title>
+    
+    <!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* [Previous CSS stays exactly the same - I'm keeping your existing styles] */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2C3E50;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 80px;
+            width: auto;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #2C3E50;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #4E2A84;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2C3E50 0%, #4E2A84 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 900;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #2C3E50;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 1rem 2.5rem;
+            border: 3px solid white;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #2C3E50;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Value Props */
+        .value-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #4E2A84;
+        }
+
+        .card p {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: #f8f9fa;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+
+        .stat {
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #4E2A84;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #555;
+            margin-top: 0.5rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: white;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2C3E50;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #4E2A84;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #2C3E50;
+        }
+
+        .step p {
+            color: #666;
+        }
+
+        .section-divider {
+            max-width: 1200px;
+            margin: 4rem auto;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4E2A84, transparent);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 100%;
+            padding: 3rem;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background: #f0f0f0;
+            color: #2C3E50;
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            color: #2C3E50;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-content .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2C3E50;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4E2A84;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-button {
+            background: #f8f9fa;
+            border: 2px dashed #4E2A84;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-button:hover {
+            background: #f0f0ff;
+        }
+
+        .file-upload-button input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .upload-text {
+            color: #4E2A84;
+            font-weight: 600;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2C3E50 0%, #4E2A84 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(78, 42, 132, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .social-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .social-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <img src="logo.svg" alt="NIL Revival Logo" class="logo">
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#brands">For Brands</a></li>
+                    <li><a href="#athletes">For Athletes</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>NIL Revival: Democratizing High-End NIL Production</h1>
+        <p>Professional production meets untapped athletic talent. We create Super Bowl-quality content with the 99% of student-athletes brands are missing.</p>
+        <div class="cta-buttons">
+            <button class="btn-primary" onclick="openBrandSignup()">I'm a Brand</button>
+            <button class="btn-secondary" onclick="openAthleteSignup()">I'm an Athlete</button>
+        </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <div class="container">
+        <div class="value-props">
+            <div class="card">
+                <h3>The Gap</h3>
+                <p>Current NIL platforms are just job boards. Athletes lack production support, resulting in low-quality "iPhone-only" content that fails to meet broadcast or premium social standards.</p>
+            </div>
+            <div class="card">
+                <h3>Our Solution</h3>
+                <p>Full production house: scripting, filming, editing. Athletes become actors in your brand's commercials. We handle compliance, creative direction, and deliver broadcast-quality content.</p>
+            </div>
+            <div class="card">
+                <h3>The Opportunity</h3>
+                <p>Female athletes generate 7x more engagement per deal. Olympic pipeline sports offer niche, committed audiences brands are eager to tap into with professional deliverables.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <h2>The NIL Landscape</h2>
+        <div class="stats-grid">
+            <div class="stat">
+                <span class="stat-number">52%</span>
+                <p class="stat-label">Of NIL deals go to female athletes in 2023</p>
+            </div>
+            <div class="stat">
+                <span class="stat-number">7x</span>
+                <p class="stat-label">More engagement per deal for women vs men</p>
+            </div>
+            <div class="stat">
+                <span class="stat-number">35%</span>
+                <p class="stat-label">Of brands invest ONLY in college athletes</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works - Brands -->
+    <section class="how-it-works" id="brands">
+        <div class="container">
+            <h2>How It Works: For Brands</h2>
+            <p class="subtitle">Outsource your NIL content production to the experts</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Submit Creative Brief</h4>
+                    <p>Tell us your campaign goals, brand guidelines, and target audience</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>We Match With Athletes</h4>
+                    <p>Our algorithm finds the perfect athlete profile for your brand</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>We Handle Production</h4>
+                    <p>Scripting, filming, editing - we create your commercial</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Track Engagement</h4>
+                    <p>Monitor performance through your brand dashboard</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- How It Works - Athletes -->
+    <section class="how-it-works" id="athletes">
+        <div class="container">
+            <h2>How It Works: For Athletes</h2>
+            <p class="subtitle">Focus on your sport, we'll handle the production</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Create Your Profile</h4>
+                    <p>Build your athlete card with stats, sport, and social metrics</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Get Matched</h4>
+                    <p>Swipe on brand campaigns that align with your personal brand</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Show Up & Perform</h4>
+                    <p>We script it, you act it. Professional production, zero stress</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Get Paid</h4>
+                    <p>Track your payouts. We handle all compliance and contracts</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Athlete Signup Modal -->
+    <div id="athleteModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeAthleteSignup()">&times;</button>
+            <h2>Athlete Registration</h2>
+            <p class="subtitle">Create your profile and start getting matched with brands</p>
+            
+            <form id="athleteForm" onsubmit="submitAthleteForm(event)">
+                <!-- Email (for login) -->
+                <div class="form-group">
+                    <label for="athleteEmail">Email Address *</label>
+                    <input type="email" id="athleteEmail" required placeholder="your.email@university.edu">
+                </div>
+
+                <!-- Profile Photo -->
+                <div class="form-group">
+                    <label>Profile Photo *</label>
+                    <div class="file-upload-wrapper">
+                        <label class="file-upload-button" for="athletePhoto">
+                            <input type="file" id="athletePhoto" accept="image/*" required onchange="previewImage(event, 'athletePreview')">
+                            <div class="upload-text">📸 Click to upload your photo</div>
+                            <div class="upload-subtext">JPG, PNG or GIF (Max 5MB)</div>
+                        </label>
+                    </div>
+                    <div id="athletePreview" class="image-preview"></div>
+                </div>
+
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="athleteName">Full Name *</label>
+                    <input type="text" id="athleteName" required placeholder="e.g., Claudia Chang">
+                </div>
+
+                <!-- School -->
+                <div class="form-group">
+                    <label for="athleteSchool">School *</label>
+                    <input type="text" id="athleteSchool" required placeholder="e.g., Northwestern University">
+                </div>
+
+                <!-- Sport -->
+                <div class="form-group">
+                    <label for="athleteSport">Primary Sport *</label>
+                    <select id="athleteSport" required>
+                        <option value="">Select your sport...</option>
+                        <option value="swimming">Swimming</option>
+                        <option value="field-hockey">Field Hockey</option>
+                        <option value="lacrosse">Lacrosse</option>
+                        <option value="soccer">Soccer</option>
+                        <option value="volleyball">Volleyball</option>
+                        <option value="basketball">Basketball</option>
+                        <option value="track-field">Track & Field</option>
+                        <option value="cross-country">Cross Country</option>
+                        <option value="tennis">Tennis</option>
+                        <option value="golf">Golf</option>
+                        <option value="softball">Softball</option>
+                        <option value="rowing">Rowing</option>
+                        <option value="fencing">Fencing</option>
+                        <option value="gymnastics">Gymnastics</option>
+                        <option value="wrestling">Wrestling</option>
+                        <option value="football">Football</option>
+                        <option value="baseball">Baseball</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Division Level -->
+                <div class="form-group">
+                    <label for="athleteLevel">Competition Level *</label>
+                    <select id="athleteLevel" required>
+                        <option value="">Select level...</option>
+                        <option value="d1">Division I</option>
+                        <option value="d2">Division II</option>
+                        <option value="d3">Division III</option>
+                        <option value="club">Club</option>
+                    </select>
+                </div>
+
+                <!-- Social Media -->
+                <div class="form-group">
+                    <label>Social Media Handles *</label>
+                    <div class="social-inputs">
+                        <div>
+                            <input type="text" id="athleteInstagram" required placeholder="Instagram @username">
+                        </div>
+                        <div>
+                            <input type="text" id="athleteTiktok" required placeholder="TikTok @username">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Follower Count -->
+                <div class="form-group">
+                    <label for="athleteFollowers">Total Followers (across all platforms) *</label>
+                    <input type="number" id="athleteFollowers" required placeholder="e.g., 5000">
+                </div>
+
+                <!-- Bio -->
+                <div class="form-group">
+                    <label for="athleteBio">Bio / Achievements</label>
+                    <textarea id="athleteBio" placeholder="Tell brands about yourself, your achievements, and what makes you unique..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="athleteSubmitBtn">Create My Profile 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Brand Signup Modal -->
+    <div id="brandModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeBrandSignup()">&times;</button>
+            <h2>Brand Registration</h2>
+            <p class="subtitle">Start creating Super Bowl-quality NIL content</p>
+            
+            <form id="brandForm" onsubmit="submitBrandForm(event)">
+                <!-- Email (for login) -->
+                <div class="form-group">
+                    <label for="brandEmail">Email Address *</label>
+                    <input type="email" id="brandEmail" required placeholder="contact@yourbrand.com">
+                </div>
+
+                <!-- Company Logo -->
+                <div class="form-group">
+                    <label>Company Logo *</label>
+                    <div class="file-upload-wrapper">
+                        <label class="file-upload-button" for="brandLogo">
+                            <input type="file" id="brandLogo" accept="image/*" required onchange="previewImage(event, 'brandPreview')">
+                            <div class="upload-text">🏢 Click to upload your logo</div>
+                            <div class="upload-subtext">JPG, PNG or SVG (Max 5MB)</div>
+                        </label>
+                    </div>
+                    <div id="brandPreview" class="image-preview"></div>
+                </div>
+
+                <!-- Company Name -->
+                <div class="form-group">
+                    <label for="brandName">Company Name *</label>
+                    <input type="text" id="brandName" required placeholder="e.g., Protein Bar">
+                </div>
+
+                <!-- Industry -->
+                <div class="form-group">
+                    <label for="brandIndustry">Industry *</label>
+                    <select id="brandIndustry" required>
+                        <option value="">Select industry...</option>
+                        <option value="food-beverage">Food & Beverage</option>
+                        <option value="fitness-wellness">Fitness & Wellness</option>
+                        <option value="apparel">Apparel & Fashion</option>
+                        <option value="sports-equipment">Sports Equipment</option>
+                        <option value="technology">Technology</option>
+                        <option value="financial">Financial Services</option>
+                        <option value="retail">Retail</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Company Description -->
+                <div class="form-group">
+                    <label for="brandDescription">Company Description *</label>
+                    <textarea id="brandDescription" required placeholder="Tell us about your brand, products, and values..."></textarea>
+                </div>
+
+                <!-- Social Media -->
+                <div class="form-group">
+                    <label>Brand Social Media</label>
+                    <div class="social-inputs">
+                        <div>
+                            <input type="text" id="brandInstagram" placeholder="Instagram @brand">
+                        </div>
+                        <div>
+                            <input type="text" id="brandTiktok" placeholder="TikTok @brand">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Audience -->
+                <div class="form-group">
+                    <label for="brandAudience">Target Audience Description *</label>
+                    <textarea id="brandAudience" required placeholder="e.g., Women 18-24 going to the Northwestern gym looking to run, swim, or play paddle sports"></textarea>
+                </div>
+
+                <!-- Target Demographics -->
+                <div class="form-group">
+                    <label>Target Demographics (check all that apply) *</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="demographics" value="women"> Women
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="demographics" value="men"> Men
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="demographics" value="college-students"> College Students
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="demographics" value="young-professionals"> Young Professionals
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sports Interests -->
+                <div class="form-group">
+                    <label>Sports/Activities of Interest (check all that apply) *</label>
+                    
+                    <div style="margin-top: 1rem; margin-bottom: 0.5rem;">
+                        <strong style="color: #4E2A84;">Women's Sports:</strong>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-basketball"> Basketball
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-cross-country"> Cross Country
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-fencing"> Fencing
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-field-hockey"> Field Hockey
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-golf"> Golf
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-gymnastics"> Gymnastics
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-lacrosse"> Lacrosse
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-soccer"> Soccer
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-softball"> Softball
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-swimming-diving"> Swimming & Diving
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-tennis"> Tennis
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-track-field"> Track & Field
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="womens-volleyball"> Volleyball
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
+                        <strong style="color: #4E2A84;">Men's Sports:</strong>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-baseball"> Baseball
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-basketball"> Basketball
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-cross-country"> Cross Country
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-fencing"> Fencing
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-football"> Football
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-golf"> Golf
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-lacrosse"> Lacrosse
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-soccer"> Soccer
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-swimming-diving"> Swimming & Diving
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-tennis"> Tennis
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-track-field"> Track & Field
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="mens-wrestling"> Wrestling
+                        </label>
+                    </div>
+
+                    <div style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
+                        <strong style="color: #4E2A84;">Other Categories:</strong>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="all-sports"> All Sports
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="olympic-pipeline"> Olympic Pipeline Sports
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="sports" value="non-revenue"> Non-Revenue Sports
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Campaign Budget -->
+                <div class="form-group">
+                    <label for="brandBudget">Estimated Campaign Budget *</label>
+                    <select id="brandBudget" required>
+                        <option value="">Select budget range...</option>
+                        <option value="0-100">$0 - $100</option>
+                        <option value="100-300">$100 - $300</option>
+                        <option value="300-500">$300 - $500</option>
+                        <option value="500-1k">$500 - $1,000</option>
+                        <option value="1k-2k">$1,000 - $2,000</option>
+                        <option value="2k-5k">$2,000 - $5,000</option>
+                        <option value="5k-10k">$5,000 - $10,000</option>
+                        <option value="10k-25k">$10,000 - $25,000</option>
+                        <option value="25k-50k">$25,000 - $50,000</option>
+                        <option value="50k+">$50,000+</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn" id="brandSubmitBtn">Start Creating Content 🎬</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ===========================================
+        // SUPABASE CONFIGURATION
+        // ===========================================
+        const SUPABASE_URL = 'https://dvspfnicraalisodqbcn.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_eiCFYdCfGK5Xywio7aj2Vg_iSLQ6GRg';
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ===========================================
+        // MODAL FUNCTIONS
+        // ===========================================
+        function openAthleteSignup() {
+            document.getElementById('athleteModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAthleteSignup() {
+            document.getElementById('athleteModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openBrandSignup() {
+            document.getElementById('brandModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBrandSignup() {
+            document.getElementById('brandModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const athleteModal = document.getElementById('athleteModal');
+            const brandModal = document.getElementById('brandModal');
+            if (event.target === athleteModal) {
+                closeAthleteSignup();
+            }
+            if (event.target === brandModal) {
+                closeBrandSignup();
+            }
+        }
+
+        // ===========================================
+        // IMAGE PREVIEW
+        // ===========================================
+        function previewImage(event, previewId) {
+            const file = event.target.files[0];
+            const previewDiv = document.getElementById(previewId);
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ===========================================
+        // FILE UPLOAD TO SUPABASE STORAGE
+        // ===========================================
+        async function uploadFile(file, bucket, folder) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${folder}/${Math.random().toString(36).substring(2)}.${fileExt}`;
+            
+            const { data, error } = await supabase.storage
+                .from(bucket)
+                .upload(fileName, file);
+
+            if (error) {
+                console.error('Upload error:', error);
+                return null;
+            }
+
+            // Get public URL
+            const { data: urlData } = supabase.storage
+                .from(bucket)
+                .getPublicUrl(fileName);
+
+            return urlData.publicUrl;
+        }
+
+        // ===========================================
+        // ATHLETE FORM SUBMISSION
+        // ===========================================
+        async function submitAthleteForm(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('athleteSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Creating Profile...';
+
+            try {
+                // Upload photo
+                const photoFile = document.getElementById('athletePhoto').files[0];
+                const photoUrl = await uploadFile(photoFile, 'athlete-photos', 'profiles');
+
+                if (!photoUrl) {
+                    throw new Error('Failed to upload photo');
+                }
+
+                // Prepare data
+                const athleteData = {
+                    email: document.getElementById('athleteEmail').value,
+                    name: document.getElementById('athleteName').value,
+                    school: document.getElementById('athleteSchool').value,
+                    sport: document.getElementById('athleteSport').value,
+                    level: document.getElementById('athleteLevel').value,
+                    instagram: document.getElementById('athleteInstagram').value,
+                    tiktok: document.getElementById('athleteTiktok').value,
+                    followers: parseInt(document.getElementById('athleteFollowers').value),
+                    bio: document.getElementById('athleteBio').value,
+                    photo_url: photoUrl
+                };
+
+                // Insert into database
+                const { data, error } = await supabase
+                    .from('athletes')
+                    .insert([athleteData])
+                    .select();
+
+                if (error) {
+                    throw error;
+                }
+
+                // Success!
+                alert(`Welcome to NIL Revival, ${athleteData.name}! 🎉\n\nYour athlete profile has been created successfully. We'll review your application and start matching you with brands.\n\nCheck your email at ${athleteData.email} for next steps!`);
+                
+                closeAthleteSignup();
+                document.getElementById('athleteForm').reset();
+                document.getElementById('athletePreview').innerHTML = '';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error creating your profile. Please try again or contact support.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Create My Profile 🚀';
+            }
+        }
+
+        // ===========================================
+        // BRAND FORM SUBMISSION
+        // ===========================================
+        async function submitBrandForm(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('brandSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Creating Profile...';
+
+            try {
+                // Upload logo
+                const logoFile = document.getElementById('brandLogo').files[0];
+                const logoUrl = await uploadFile(logoFile, 'brand-logos', 'logos');
+
+                if (!logoUrl) {
+                    throw new Error('Failed to upload logo');
+                }
+
+                // Collect checkboxes
+                const demographics = Array.from(document.querySelectorAll('input[name="demographics"]:checked'))
+                    .map(cb => cb.value);
+                
+                const sports = Array.from(document.querySelectorAll('input[name="sports"]:checked'))
+                    .map(cb => cb.value);
+
+                // Prepare data
+                const brandData = {
+                    email: document.getElementById('brandEmail').value,
+                    company_name: document.getElementById('brandName').value,
+                    industry: document.getElementById('brandIndustry').value,
+                    description: document.getElementById('brandDescription').value,
+                    instagram: document.getElementById('brandInstagram').value || null,
+                    tiktok: document.getElementById('brandTiktok').value || null,
+                    target_audience: document.getElementById('brandAudience').value,
+                    demographics: demographics,
+                    sports_interests: sports,
+                    budget: document.getElementById('brandBudget').value,
+                    logo_url: logoUrl
+                };
+
+                // Insert into database
+                const { data, error } = await supabase
+                    .from('brands')
+                    .insert([brandData])
+                    .select();
+
+                if (error) {
+                    throw error;
+                }
+
+                // Success!
+                alert(`Welcome to NIL Revival, ${brandData.company_name}! 🚀\n\nYour brand profile has been created successfully. Our team will review your campaign goals and start matching you with perfect athletes.\n\nYou'll receive an email at ${brandData.email} with your dashboard access within 24 hours!`);
+                
+                closeBrandSignup();
+                document.getElementById('brandForm').reset();
+                document.getElementById('brandPreview').innerHTML = '';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error creating your profile. Please try again or contact support.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Start Creating Content 🎬';
+            }
+        }
+
+        // ===========================================
+        // SMOOTH SCROLLING & ANIMATIONS
+        // ===========================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
